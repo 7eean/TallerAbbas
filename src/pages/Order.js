@@ -1,4 +1,4 @@
-// FormularioPresupuesto.js
+
 import React, { useState } from 'react';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable'; 
@@ -21,11 +21,8 @@ const FormularioPresupuesto = () => {
 
   const generarPDF = () => {
     const doc = new jsPDF();
-
-    // Añadir logo (debe estar en la carpeta 'public')
     doc.addImage(logo, 'PNG', 10, 5, 60, 60); // (src, tipo, x, y, ancho, alto)
 
-    // Título del PDF
     doc.setFontSize(28);
     doc.setFont("helvetica", "bold");
     doc.text('Presupuesto', 142, 23);
@@ -62,10 +59,6 @@ const FormularioPresupuesto = () => {
     doc.line(112, 91, 190, 91);// Línea punteada
 
     doc.text('__________________________________________________________________________', 20, 113);
-       // Primero, colocamos "Mano de obra" antes de la tabla de repuestos
-    // doc.text(`Mano de obra - Chapa y Pintura: ${manodeobra}`, 20, 125); 
-    // doc.setLineDashPattern([1, 1], 1); // Línea punteada
-    // doc.line(82, 126, 195, 126); // Línea punteada
 
        doc.autoTable({
         startY: 125, // Aquí comenzamos la tabla después de la mano de obra
@@ -84,9 +77,8 @@ const FormularioPresupuesto = () => {
       });
   
    
-       // Luego, generamos la tabla de repuestos
        doc.autoTable({
-         startY: 155,//Aquí comenzamos la tabla después de la mano de obra
+         startY: 155,
          head: [['Repuestos a reemplazar:']],
          body: [[repuestos]],
          styles: {
