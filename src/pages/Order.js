@@ -114,7 +114,7 @@ const FormularioPresupuesto = () => {
         <Link to="/">
         <img style={{width: '200px', paddingRight:'120px'}} src={logo} alt="Logo Taller Abbas"  />
         </Link>
-          <Link style={{textDecoration: 'none', color:'black', fontSize: '25px', marginLeft:'-40px'}} to="/"> <img src={inicio} style={{width:'20px', marginRight:'5px'}}></img>Inicio</Link>
+          <Link style={{textDecoration: 'none', color:'black', fontSize: '25px', marginLeft:'-40px'}} to="/"> <img src={inicio} alt='Logo' style={{width:'20px', marginRight:'5px'}}></img>Inicio</Link>
         </nav>
         
       <div style={{textDecoration: 'none', display: 'flex', alignItems:'center', justifyContent: 'center', marginBottom:'40px'}} >
@@ -202,7 +202,7 @@ const FormularioPresupuesto = () => {
         </form>
       </div>
       <div style={{display: 'flex', justifyContent:'space-around'}}>
-        <h4 style={{color:'black'}}><img src={ubi} style={{width:'20px'}}></img>
+        <h4 style={{color:'black'}}><img src={ubi} alt='logo' style={{width:'20px'}}></img>
           Alianza 698 - CP 1702
         </h4>
         <h4 style={{color:'black'}}>

@@ -14,10 +14,10 @@ const Home = () => {
       <nav style={{fontSize: '30px', color:'#029ea6', marginTop:'40px', marginBottom:'20px', border:'2px solid white', borderRadius:'20px', padding:'10px' }}>
         <Link style={{textDecoration: 'none', color:'#029ea6', }} to="/order">Crear presupuesto a PDF</Link>
       </nav>
-      <h4 style={{color:'white'}}><img src={ubi} style={{width:'20px'}}></img>
+      <h4 style={{color:'white'}}><img src={ubi} alt="logo" style={{width:'20px'}}></img>
         Alianza 698 - CP 1702 
       </h4>
-      <h4 style={{color:'white'}}> <img src={wsp} style={{width:'20px'}}></img>
+      <h4 style={{color:'white'}}> <img src={wsp} alt="logo" style={{width:'20px'}}></img>
         Contacto: 1134900722
       </h4>
       <h4 style={{color:'white'}}>
