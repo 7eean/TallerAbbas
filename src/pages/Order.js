@@ -18,6 +18,7 @@ const FormularioPresupuesto = () => {
   const [dominio, setDominio] = useState('');
   const [manodeobra, setManodeobra] = useState('');
   const [repuestos, setRepuestos] = useState('');
+  const [precioRepuestos, setPrecioRepuestos] = useState('');
 
   const generarPDF = () => {
     const doc = new jsPDF();
@@ -39,31 +40,38 @@ const FormularioPresupuesto = () => {
     // Añadir detalles del presupuesto
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
-    doc.text(`Cliente: ${cliente}`, 20, 90);
+    doc.text(`Cliente: ${cliente}`, 20, 85);
     doc.setLineDashPattern([1, 1], 0);// Línea punteada
-    doc.line(35, 91, 95, 91);// Línea punteada
-    doc.text(`Fecha: ${fecha}`, 20, 100);
+    doc.line(35, 86, 95, 86);// Línea punteada
+    doc.text(`Fecha: ${fecha}`, 20, 95);
     doc.setLineDashPattern([1, 1], 0);// Línea punteada
-    doc.line(35, 101, 65, 101);// Línea punteada
-    doc.text(`Modelo: ${modelo}`, 70, 100);
+    doc.line(35, 96, 65, 96);// Línea punteada
+    doc.text(`Modelo: ${modelo}`, 70, 95);
     doc.setLineDashPattern([1, 1], 0);// Línea punteada
-    doc.line(85, 101, 120, 101);// Línea punteada
-    doc.text(`Año: ${anio}`,125 ,100);
+    doc.line(85, 96, 120, 96);// Línea punteada
+    doc.text(`Año: ${anio}`,125 , 95);
     doc.setLineDashPattern([1, 1], 0);// Línea punteada
-    doc.line(135, 101, 145, 101);// Línea punteada
-    doc.text(`Dominio: ${dominio}`, 150 ,100);
+    doc.line(135, 96, 145, 96);// Línea punteada
+    doc.text(`Dominio: ${dominio}`, 150 , 95);
     doc.setLineDashPattern([1, 1], 0);// Línea punteada
-    doc.line(170, 101, 190, 101);// Línea punteada
-    doc.text(`Marca: ${marca}`, 97.5, 90);
+    doc.line(170, 96, 190, 96);// Línea punteada
+    doc.text(`Marca: ${marca}`, 97.5, 85);
     doc.setLineDashPattern([1, 1], 0);// Línea punteada
-    doc.line(112, 91, 190, 91);// Línea punteada
+    doc.line(112, 86, 190, 86);// Línea punteada
 
-    doc.text('__________________________________________________________________________', 20, 113);
+    doc.text('__________________________________________________________________________', 20, 105);
 
-       doc.autoTable({
-        startY: 125, // Aquí comenzamos la tabla después de la mano de obra
-        head: [['Mano de obra - Chapa y Pintura: ']],
-        body: [[manodeobra]],
+      // VARIANTE DE TABLA CON PRECIOS Y REPUESTOS SEPARADOS
+      const headers = [["Repuestos a reemplazar", "Precio"]];
+      const data = repuestos.split(',').map((repuesto, index) => [
+        repuesto.trim(),
+        `$${precioRepuestos.split(',')[index].trim() || '0.00'}`,
+      ]);
+
+      doc.autoTable({
+         head: headers,
+        body: data,
+        startY: 110, // Posición inicial de la tabla
         styles: {
           fontSize: 14,
           halign: 'left',
@@ -74,32 +82,61 @@ const FormularioPresupuesto = () => {
          fillColor:[2, 157, 166],
         },
         margin: { left: 20, right: 20 },
+        didDrawPage: (data) => {
+          // Pie de página
+          const pageCount = doc.internal.getNumberOfPages();
+          const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+          const footerText = `Página ${currentPage} de ${pageCount}`;
+          doc.setFontSize(10);
+          doc.text(footerText, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 10, {
+            align: "right",
+          }); }
+      });
+      
+
+   
+       //doc.autoTable({
+        // startY: 155,
+        // head: [['Repuestos a reemplazar:']],
+       //  body: [[repuestos]],
+       //  styles: {
+       //    fontSize: 14,
+       //    halign: 'left',
+       //    cellPadding: 2,
+       //    
+       //  },
+       //  headStyles: {
+       //   fillColor:[2, 157, 166],
+       //  },
+       //  margin: { left: 20, right: 20 },
+      // });
+
+      doc.autoTable({
+        startY: (20, doc.autoTable.previous.finalY + 10), // Aquí comenzamos la tabla después de la mano de obra
+        head: [['Mano de obra - Chapa y Pintura: ']],
+        body: [[` $ ${manodeobra}`]],
+        styles: {
+          fontSize: 14,
+          halign: 'left',
+          cellPadding: 2,
+          
+        },
+        headStyles: {
+         fillColor:[2, 157, 166],
+          },
+        margin: { left: 20, right: 20 },
       });
   
    
-       doc.autoTable({
-         startY: 155,
-         head: [['Repuestos a reemplazar:']],
-         body: [[repuestos]],
-         styles: {
-           fontSize: 14,
-           halign: 'left',
-           cellPadding: 2,
-           
-         },
-         headStyles: {
-          fillColor:[2, 157, 166],
-         },
-         margin: { left: 20, right: 20 },
-       });
-   
   doc.text('_________________________________________________________________________', 20, doc.autoTable.previous.finalY + 7);
   // Precio
+  doc.setFont('helvetica', 'bold');
   doc.text(`Total: $ ${precio}`, 20, doc.autoTable.previous.finalY + 25);
 
   // Firma y sello
+  doc.setFont('helvetica', 'normal');
   doc.text('Firma y sello: ____________________', 120, doc.autoTable.previous.finalY + 25);
-  
+
   doc.setFontSize(10);
   doc.text('Una vez recibido, el presupuesto tiene una válidez de 15 días. Pasado ese tiempo los valores podrán ',20, doc.autoTable.previous.finalY + 42);
   doc.text('sufrir modificaciones sin previo aviso.', 20, doc.autoTable.previous.finalY + 48);
@@ -124,7 +161,7 @@ const FormularioPresupuesto = () => {
             <label> </label>
             <div style={{display:'flex', justifyContent:'center'}}>
             <input style={{color:'#029ea6', fontSize:'20px', borderRadius:'10px', width: '300px'}}
-              placeholder="Cliente: "
+              placeholder="Nombre del cliente: "
               type="text"
               value={cliente}
               onChange={(e) => setCliente(e.target.value)}
@@ -175,6 +212,14 @@ const FormularioPresupuesto = () => {
           <div style={{margin:'5px', display:'flex', justifyContent:'center'}}>
             <label></label>
             <textarea style={{color:'#029ea6', fontSize:'20px', display:'flex', justifyContent:'center', borderRadius:'10px', width: '300px'}}
+              placeholder='Mano de obra - Chapa y Pintura: '
+              value={manodeobra}
+              onChange={(e) => setManodeobra(e.target.value)}
+            />
+          </div>
+          <div style={{margin:'5px', display:'flex', justifyContent:'center'}}>
+            <label></label>
+            <textarea style={{color:'#029ea6', fontSize:'20px', display:'flex', justifyContent:'center', borderRadius:'10px', width: '300px'}}
               placeholder='Repuestos a reemplazar: '
               value={repuestos}
               onChange={(e) => setRepuestos(e.target.value)}
@@ -183,15 +228,15 @@ const FormularioPresupuesto = () => {
           <div style={{margin:'5px', display:'flex', justifyContent:'center'}}>
             <label></label>
             <textarea style={{color:'#029ea6', fontSize:'20px', display:'flex', justifyContent:'center', borderRadius:'10px', width: '300px'}}
-              placeholder='Mano de obra - chapa y Pintura: '
-              value={manodeobra}
-              onChange={(e) => setManodeobra(e.target.value)}
+              placeholder='Precio de repuestos $: '
+              value={precioRepuestos}
+              onChange={(e) => setPrecioRepuestos(e.target.value)}
             />
           </div>
           <div style={{margin:'5px', display:'flex', justifyContent:'center'}}>
             <label></label>
             <input style={{color:'#029ea6', fontSize:'20px', borderRadius:'10px', width: '300px'}}
-              placeholder="$0.00"
+              placeholder="Precio total $:"
               value={precio}
               onChange={(e) => setPrecio(e.target.value)}
             />
